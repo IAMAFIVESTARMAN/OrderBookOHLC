@@ -1,80 +1,35 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import LightweightChart from "./lightweightChart";
+import { Duration, ChartCandle } from "../types/typesAndEnums";
+import { useCandleData } from "../hooks/useCandleData";
+import Highycharts from "./Highycharts";
+import { useHighLightData } from "../hooks/useHighLightData";
 
-type duration = {
-  timeDuration: string;
-};
+const ChartWebSocketComponent = ({ timeDuration }: Duration) => {
+  const { chartData } = useCandleData(timeDuration);
+  const { highlightChartData } = useHighLightData(timeDuration);
 
-type ChartData = [number, number, number, number, number, number][];
-
-const ChartWebSocketComponent = ({ timeDuration }: duration) => {
-  const [chartData, setChartData] = useState<ChartData>([]);
-  const [initial, setInitial] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log("connection rendered");
-    console.log(chartData.length);
-    const socketUrl = "wss://api-pub.bitfinex.com/ws/2";
-    const socket = new WebSocket(socketUrl);
-
-    socket.onopen = () => {
-      console.log("WebSocket connection is open");
-      let msg = JSON.stringify({
-        event: "subscribe",
-        channel: "candles",
-        key: `trade:${timeDuration}:tBTCUSD`, //'trade:TIMEFRAME:SYMBOL'
-      });
-
-      socket.send(msg);
-    };
-
-    socket.onmessage = (event) => {
-      const eventdata = JSON.parse(event.data);
-
-      if (Array.isArray(eventdata)) {
-        const [_, messageData] = eventdata;
-
-        if (messageData[0] === "hb") {
-          return; // Skip heartbeat messages
-        } else {
-          if (!initial) {
-            setChartData(messageData);
-            setInitial(true);
-          } else {
-            // console.log("working");
-            // setChartData((prev) => [...prev, messageData]);
-          }
-        }
-      }
-    };
-
-    socket.onclose = () => {
-      console.log("WebSocket connection is closed");
-    };
-
-    return () => {
-      socket.close();
-    };
-  }, [initial, timeDuration]);
-
-  const seriesData = [...chartData].map((candle) => {
-    return {
-      time: candle[0],
-      open: candle[1],
-      close: candle[2],
-      high: candle[2],
-      low: candle[4],
-    };
-  });
-
-  // console.log(seriesData.length);
-
-  const content = initial ? (
-    <div className="transition-all duration-400 ease-in">
-      <LightweightChart chartData={seriesData}></LightweightChart>
-    </div>
-  ) : (
-    <p>Loading...</p>
+  const content = (
+    <>
+      {chartData.length > 0 ? (
+        <div className="transition-all duration-400 ease-in p-10">
+          <LightweightChart
+            chartData={chartData}
+            timeDuration={timeDuration}
+          ></LightweightChart>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+      {/* {highlightChartData.length > 0 ? (
+        <Highycharts
+          timeDuration={timeDuration}
+          highlightChartData={highlightChartData}
+        ></Highycharts>
+      ) : (
+        <p>Loading...</p>
+      )} */}
+    </>
   );
 
   return content;

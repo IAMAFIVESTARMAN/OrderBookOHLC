@@ -1,20 +1,17 @@
 import React from "react";
-type Click = {
-  onClick: () => void;
-  precision: string;
-};
+import { Click } from "@/app/types/typesAndEnums";
 
-function ButtonDecPre({ onClick, precision }: Click) {
+const ButtonDecPre = ({ onClick, precision }: Click) => {
   return (
     <button
       type="button"
       className="ui-button ui-button--size-XS ui-button--clear"
       style={{
         padding: "0px 2px 2px",
-        opacity: `${precision === "decdisabled" ? "0.2" : "1"}`,
+        opacity: `${precision === "P5" ? "0.2" : "1"}`,
       }}
       onClick={onClick}
-      disabled={precision === "decdisabled"}
+      disabled={precision === "P5"}
     >
       <svg
         width="17"
@@ -37,6 +34,6 @@ function ButtonDecPre({ onClick, precision }: Click) {
       </svg>
     </button>
   );
-}
+};
 
 export default ButtonDecPre;

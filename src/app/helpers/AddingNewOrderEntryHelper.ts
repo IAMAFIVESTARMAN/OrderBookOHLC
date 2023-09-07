@@ -1,21 +1,16 @@
-type OrderBookEntry = [number, number, number];
+import { OrderBookState, OrderBookEntry } from "../types/typesAndEnums";
 
-type OrderBookState = {
-  bids: OrderBookEntry[];
-  asks: OrderBookEntry[];
-};
-
-export const addingNewHelper = (
+export const addingNewOrderEntryHelper = (
   price: number,
   count: number,
   amount: number,
   orderBook: OrderBookState
-) => {
+): OrderBookState => {
   const currentOrderBook = { ...orderBook };
 
   const updatedEntry: OrderBookEntry = [price, count, amount];
 
-  if (amount > 0) {
+  if (amount < 0) {
     currentOrderBook.bids = [...currentOrderBook.bids, updatedEntry];
   } else {
     currentOrderBook.asks = [...currentOrderBook.asks, updatedEntry];
@@ -25,6 +20,7 @@ export const addingNewHelper = (
     currentOrderBook.bids = [...currentOrderBook.bids.slice(-25)];
   }
   if (currentOrderBook.asks.length > 25) {
+    currentOrderBook.asks.pop;
     currentOrderBook.asks = [...currentOrderBook.asks.slice(-25)];
   }
 

@@ -1,17 +1,16 @@
 import React from "react";
-type Click = {
-  onClick: () => void;
-  precision: string;
-};
-
-function ButtonIncPre({ onClick, precision }: Click) {
+import { Click } from "@/app/types/typesAndEnums";
+const ButtonIncPre = ({ onClick, precision }: Click) => {
   return (
     <button
       type="button"
       className="ui-button ui-button--size-XS ui-button--clear"
-      style={{ padding: "0px 2px 2px" }}
+      style={{
+        padding: "0px 2px 2px",
+        opacity: `${precision === "P0" ? "0.2" : "1"}`,
+      }}
       onClick={onClick}
-      disabled={precision === "disabled"}
+      disabled={precision === "P0"}
     >
       <svg
         width="17"
@@ -34,6 +33,6 @@ function ButtonIncPre({ onClick, precision }: Click) {
       </svg>
     </button>
   );
-}
+};
 
 export default ButtonIncPre;

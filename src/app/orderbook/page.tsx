@@ -9,70 +9,79 @@ import {
   HiOutlineMagnifyingGlassMinus,
   HiOutlineMagnifyingGlassPlus,
 } from "react-icons/hi2";
-import Button from "./components/ButtonDecPre";
+
 import ButtonDecPre from "./components/ButtonDecPre";
 import ButtonIncPre from "./components/ButtonIncPre";
+import Dropdown from "./components/Dropdown";
 
-export default function HomePage() {
+const HomePage = () => {
   const [bookOpen, setBookOpen] = useState<boolean>(false);
-  const [apiParams, setAPIParams] = useState<string>("P0");
-  const [widthDivider, setWidthDivider] = useState(0.01);
+  const [orderbookPrecision, setOrderbookPrecision] = useState<string>("P0");
+  const [widthDivider, setWidthDivider] = useState<number>(0.01);
+  const [orderbookPair, setorderbookPair] = useState<string>("tBTCUSD");
 
-  function precisonDecHandler(precision: string) {
+  const precisonDecHandler = function (precision: string) {
     switch (precision) {
       case "P0":
-        setAPIParams("P1");
+        setOrderbookPrecision("P1");
         break;
       case "P1":
-        setAPIParams("P2");
+        setOrderbookPrecision("P2");
         break;
       case "P2":
-        setAPIParams("P3");
+        setOrderbookPrecision("P3");
         break;
       case "P3":
-        setAPIParams("P4");
+        setOrderbookPrecision("P4");
         break;
       case "P4":
-        setAPIParams("P5");
+        setOrderbookPrecision("P5");
         break;
       case "P5":
-        setAPIParams("decdisabled");
+        setOrderbookPrecision("decdisabled");
         break;
       default:
         console.log("break");
     }
-  }
+  };
 
-  function precisonIncHandler(precision: string) {
+  const precisonIncHandler = function (precision: string) {
     switch (precision) {
       case "P5":
-        setAPIParams("P4");
+        setOrderbookPrecision("P4");
         break;
       case "P4":
-        setAPIParams("P3");
+        setOrderbookPrecision("P3");
         break;
       case "P3":
-        setAPIParams("P2");
+        setOrderbookPrecision("P2");
         break;
       case "P2":
-        setAPIParams("P1");
+        setOrderbookPrecision("P1");
         break;
       case "P1":
-        setAPIParams("P0");
+        setOrderbookPrecision("P0");
         break;
       case "P0":
-        setAPIParams("disbaled");
+        setOrderbookPrecision("incdisbaled");
         break;
       default:
         console.log("break");
     }
-  }
+  };
 
+  const handleDropdown = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setorderbookPair(event.target.value);
+  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-[#121723] text-white">
       <article className="w-full">
         <div className="flex justify-between">
-          <h1 className="flex justify-between items-center">
+          <Dropdown
+            onDropDownChange={handleDropdown}
+            pair={orderbookPair}
+          ></Dropdown>
+          <h1 className="flex justify-between items-center gap-3">
             <p> Orders</p>
             <span onClick={() => setBookOpen((prev) => !prev)}>
               {bookOpen ? (
@@ -81,39 +90,53 @@ export default function HomePage() {
                 <MdKeyboardArrowRight size={20} />
               )}
             </span>
-            <span> Depth:{widthDivider}</span>
-            <span> Precision:{apiParams}</span>
+            <span>
+              Depth:
+              {`${
+                (+process.env.NEXT_PUBLIC_WIDTH_DIVIDER! / widthDivider) * 100
+              }%`}
+            </span>
+            <span>
+              Pair: {orderbookPair.slice(1, 4)}/
+              {orderbookPair.slice(4, orderbookPair.length)}
+            </span>
+            <span> Precision:{orderbookPrecision}</span>
           </h1>
-          <nav className="flex justify-between gap-2 ">
+          <nav className="flex justify-between gap-2 items-center ">
             <ButtonDecPre
-              onClick={() => precisonDecHandler(apiParams)}
-              precision={apiParams}
+              onClick={() => precisonDecHandler(orderbookPrecision)}
+              precision={orderbookPrecision}
             ></ButtonDecPre>
             <ButtonIncPre
-              onClick={() => precisonIncHandler(apiParams)}
-              precision={apiParams}
+              onClick={() => precisonIncHandler(orderbookPrecision)}
+              precision={orderbookPrecision}
             ></ButtonIncPre>
             <div>
               <HiOutlineMagnifyingGlassPlus
-                onClick={() => setWidthDivider(0.01)}
+                onClick={() =>
+                  setWidthDivider(+process.env.NEXT_PUBLIC_WIDTH_DIVIDER!)
+                }
+                size={15}
               ></HiOutlineMagnifyingGlassPlus>
             </div>
             <div>
               <HiOutlineMagnifyingGlassMinus
                 onClick={() => setWidthDivider(0.02)}
+                size={15}
               ></HiOutlineMagnifyingGlassMinus>
             </div>
           </nav>
         </div>
         {bookOpen && (
           <TradingTable
-            precision={apiParams}
+            orderbookPair={orderbookPair}
+            orderbookPrecision={orderbookPrecision}
             widthDivider={widthDivider}
           ></TradingTable>
         )}
-        {/* <TestComponent></TestComponent> */}
       </article>
-      {/* <CandlestickChart></CandlestickChart> */}
     </main>
   );
-}
+};
+
+export default HomePage;

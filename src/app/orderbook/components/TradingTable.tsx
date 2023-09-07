@@ -1,21 +1,22 @@
+import { OrderbookParams } from "@/app/types/typesAndEnums";
 import WebSocketComponent from "./Websock";
 
-type Trading = {
-  precision: string;
-  widthDivider: number;
-};
-
-function TradingTable({ precision, widthDivider }: Trading) {
+const TradingTable = ({
+  orderbookPrecision,
+  widthDivider,
+  orderbookPair,
+}: OrderbookParams) => {
   return (
-    <div className="h-full">
-      <div className="grid xl:grid-cols-2  grid-cols-1 w-full gap-x-4 ">
+    <div className="h-full transform transition-transform duration-500 py-5">
+      <div className="grid xl:grid-cols-2  grid-cols-1 w-full gap-0 border-y-2 py-10 ">
         <WebSocketComponent
-          precision={precision}
+          orderbookPrecision={orderbookPrecision}
           widthDivider={widthDivider}
+          orderbookPair={orderbookPair}
         ></WebSocketComponent>
       </div>
     </div>
   );
-}
+};
 
 export default TradingTable;

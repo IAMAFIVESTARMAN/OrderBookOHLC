@@ -7,17 +7,17 @@ import { MdKeyboardArrowRight, MdKeyboardArrowDown } from "react-icons/md";
 import ChartWebSocketComponent from "./ChartWebsock";
 
 export default function HomePage() {
-  const [bookOpen, setBookOpen] = useState<boolean>(false);
-  const [timeDuration, seTimeDuration] = useState<string>("30m");
+  const [chartOpen, setChartOpen] = useState<boolean>(false);
+  const [timeDuration, seTimeDuration] = useState<string>("5m");
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-[#121723] text-white">
       <article className="w-full">
         <div className="flex justify-between">
           <h1 className="flex justify-between items-center">
-            <p> Orders</p>
-            <span onClick={() => setBookOpen((prev) => !prev)}>
-              {bookOpen ? (
+            <p> Chart</p>
+            <span onClick={() => setChartOpen((prev) => !prev)}>
+              {chartOpen ? (
                 <MdKeyboardArrowDown size={20} />
               ) : (
                 <MdKeyboardArrowRight size={20} />
@@ -37,14 +37,12 @@ export default function HomePage() {
             <button onClick={() => seTimeDuration("1m")}>1m</button>
           </nav>
         </div>
-        {bookOpen && (
+        {chartOpen && (
           <ChartWebSocketComponent
             timeDuration={timeDuration}
           ></ChartWebSocketComponent>
         )}
-        {/* <TestComponent></TestComponent> */}
       </article>
-      {/* <CandlestickChart></CandlestickChart> */}
     </main>
   );
 }

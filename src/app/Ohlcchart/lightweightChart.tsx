@@ -114,7 +114,7 @@ const LightweightChart = ({ chartData, timeDuration }: ChartData) => {
   const scrollBackInTime = () => {
     if (chart.current) {
       chart.current!.timeScale().setVisibleLogicalRange({
-        from: Math.floor((Date.now() - 1694056316198) / 100),
+        from: Math.floor((Date.now() - 21600000) / 1000),
         to: Math.floor(Date.now() / 1000),
       });
     }
